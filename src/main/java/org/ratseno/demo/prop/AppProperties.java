@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties("org.ratseno.demo")
+@ConfigurationProperties("org.ratseno")
 public class AppProperties {
     private String secretKey;
 
