@@ -80,13 +80,8 @@ public class MemberAuth {
 
     @Override
     public String toString() {
-        return "MemberAuth(userAuthNo=" + getUserAuthNo() + ", userNo=" + getUserNo() + ", auth=" + getAuth() + ", regDate=" + getRegDate() + ", updDate=" + getUpdDate() + ")";
+        return "MemberAuth(userAuthNo=" + getUserAuthNo() + ", userNo=" + getUserNo() + ", auth=" + getAuth()
+                + ", regDate=" + getRegDate() + ", updDate=" + getUpdDate() + ")";
     }
 
-
-
-    
-
-    
-    
 }

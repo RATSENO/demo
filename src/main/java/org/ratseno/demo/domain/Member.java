@@ -19,6 +19,9 @@ import javax.validation.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 @JsonIgnoreProperties({ "hibernateLazyInitializer" })
 @Entity
 @Table(name = "tb_member")
@@ -46,9 +49,11 @@ public class Member {
     private List<MemberAuth> authList = new ArrayList<>();
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    @CreationTimestamp
     private LocalDateTime regDate;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    @UpdateTimestamp
     private LocalDateTime updDate;
 
     public Long getUserNo() {
@@ -142,5 +147,13 @@ public class Member {
         return "Member(userNo=" + getUserNo() + ", userId=" + getUserId() + ", userPw=" + getUserPw() + ", userName="
                 + getUserName() + ", regDate=" + getRegDate()
                 + ", updDate=" + getUpdDate() + ", authList=" + getAuthList() + ")";
+    }
+
+    public void addAuth(MemberAuth auth) {
+        this.authList.add(auth);
+    }
+
+    public void clearAuthList() {
+        this.authList.clear();
     }
 }
