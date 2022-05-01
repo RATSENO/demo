@@ -62,13 +62,13 @@ public class JwtTokenProvider {
     public String createToken(long userNo, String userId, List<String> roles) {
         byte[] signinKey = getSigninKey();
         String token = Jwts.builder()
-                            .signWith(Keys.hmacShaKeyFor(signinKey), SignatureAlgorithm.HS512)
-                            .setHeaderParam("typ", "JWT")
-                            .setExpiration(new Date(System.currentTimeMillis() + 864000000L))
-                            .claim("uno", "" + userNo)
-                            .claim("uid", userId)
-                            .claim("rol", roles)
-                            .compact();
+                .signWith(Keys.hmacShaKeyFor(signinKey), SignatureAlgorithm.HS512)
+                .setHeaderParam("typ", "JWT")
+                .setExpiration(new Date(System.currentTimeMillis() + 864000000L))
+                .claim("uno", "" + userNo)
+                .claim("uid", userId)
+                .claim("rol", roles)
+                .compact();
         return token;
     }
 
@@ -85,9 +85,9 @@ public class JwtTokenProvider {
                 String userId = (String) claims.get("uid");
 
                 List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>) ((List) claims.get("rol"))
-                                                                                            .stream()
-                                                                                            .map(authority -> new SimpleGrantedAuthority((String) authority))
-                                                                                            .collect(Collectors.toList());
+                        .stream()
+                        .map(authority -> new SimpleGrantedAuthority((String) authority))
+                        .collect(Collectors.toList());
 
                 if (this.isNotEmpty(userId)) {
                     Member member = new Member();
