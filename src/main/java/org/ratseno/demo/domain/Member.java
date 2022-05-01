@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -38,6 +39,7 @@ public class Member {
 
     @NotBlank
     @Column(length = 200, nullable = false)
+    @JsonIgnore
     private String userPw;
 
     @NotBlank

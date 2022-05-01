@@ -2,6 +2,7 @@ package org.ratseno.demo.controller;
 
 import java.util.Locale;
 
+import org.ratseno.demo.common.security.domain.CustomUser;
 import org.ratseno.demo.domain.Member;
 import org.ratseno.demo.service.MemberService;
 import org.slf4j.Logger;
@@ -9,8 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,5 +68,18 @@ public class MemberController {
         String message = this.messageSource.getMessage("common.cannotSetupAdmin", null, Locale.KOREAN);
         log.info("=======MemberController.setupAdmin.{}=======", HttpStatus.BAD_REQUEST);
         return new ResponseEntity(message, HttpStatus.BAD_REQUEST);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','MEMBER')")
+    @GetMapping({ "/myinfo" })
+    public ResponseEntity<Member> getMyInfo(@AuthenticationPrincipal CustomUser customUser) throws Exception {
+        log.info("=======MemberController.getMyInfo=======");
+        Long userNo = Long.valueOf(customUser.getUserNo());
+        log.info("register userNo = {}", userNo);
+        Member member = this.memberService.read(userNo);
+        member.setUserPw("");
+
+        log.info("=======MemberController.getMyInfo.{}=======", HttpStatus.OK);
+        return new ResponseEntity(member, HttpStatus.OK);
     }
 }
