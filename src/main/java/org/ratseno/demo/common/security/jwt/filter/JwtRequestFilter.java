@@ -10,31 +10,39 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ratseno.demo.common.security.jwt.provider.JwtTokenProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-public class JwtRequestFilter extends OncePerRequestFilter{
+public class JwtRequestFilter extends OncePerRequestFilter {
+    private static final Logger log = LoggerFactory.getLogger(JwtRequestFilter.class);
+
     private final JwtTokenProvider jwtTokenProvider;
 
-    public JwtRequestFilter(JwtTokenProvider jwtTokenProvider){
+    public JwtRequestFilter(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    private boolean isEmpty(CharSequence cs){
-        return (cs == null || cs.length() ==0);
+    private boolean isEmpty(CharSequence cs) {
+        return (cs == null || cs.length() == 0);
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = this.jwtTokenProvider.getAuthentication(request);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        log.info("==========JwtRequestFilter.doFilterInternal========");
+
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = this.jwtTokenProvider
+                .getAuthentication(request);
         String header = request.getHeader("Authorization");
         if (isEmpty(header) || !header.startsWith("Bearer ")) {
-            filterChain.doFilter((ServletRequest)request, (ServletResponse)response);
+            filterChain.doFilter((ServletRequest) request, (ServletResponse) response);
             return;
-        } 
-        SecurityContextHolder.getContext().setAuthentication((Authentication)usernamePasswordAuthenticationToken);
-        filterChain.doFilter((ServletRequest)request, (ServletResponse)response);
+        }
+        SecurityContextHolder.getContext().setAuthentication((Authentication) usernamePasswordAuthenticationToken);
+        filterChain.doFilter((ServletRequest) request, (ServletResponse) response);
     }
 }
