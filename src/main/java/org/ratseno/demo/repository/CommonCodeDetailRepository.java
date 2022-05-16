@@ -9,9 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface CommonCodeDetailRepository extends JpaRepository<CommonCodeDetail, CommonCodeDetailId> {
 
-    @Query("SELECT max(cd.sortSeq) FROM CodeDetail cd WHERE cd.groupCode = ?1")
+    @Query("SELECT max(cd.sortSeq) FROM CommonCodeDetail cd WHERE cd.groupCode = ?1")
     List<Object[]> getMaxSortSeq(String paramString);
 
-    @Query("SELECT cd FROM CodeDetail cd WHERE cd.groupCode = ?1")
+    @Query("SELECT cd FROM CommonCodeDetail cd WHERE cd.groupCode = ?1")
     List<CommonCodeDetail> getCodeList(String paramString);
 }
