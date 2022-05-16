@@ -10,6 +10,7 @@ import org.ratseno.demo.common.security.jwt.provider.JwtTokenProvider;
 import org.ratseno.demo.common.security.service.CustomUserDetailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -39,11 +40,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         log.info("SecurityConfig...");
-
+        // 폼 로그인 기능, 베이직 인증 비활성화
         http.formLogin().disable()
                 .httpBasic().disable();
 
         http.cors();
+
+        // CSRF 방지 지원 기능 비활성화
         http.csrf().disable();
         http.addFilterAt(new JwtAuthenticationFilter(authenticationManager(), this.jwtTokenProvider),
                 UsernamePasswordAuthenticationFilter.class)
@@ -52,23 +55,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+        log.info("!!!!!!!!!!!!!!!!!!!!!!!!!");
+        log.info(PathRequest.toStaticResources().atCommonLocations().toString());
+
         http.authorizeRequests()
-                .requestMatchers().permitAll()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers().hasAnyRole("ADMIN").antMatchers("/").permitAll()
-                .antMatchers(new String[] { "/codes/**" }).access("permitAll")
-                .antMatchers(new String[] { "/users/**" }).access("permitAll")
-                // .antMatchers(new String[] { "/codegroups/**" }).access("hasRole('ADMIN')")
-                // .antMatchers(new String[] { "/codedetails/**" }).access("hasRole('ADMIN')")
-                .antMatchers(new String[] { "/boards/**" })
-                .access("request.method == 'GET' ? permitAll : hasAnyRole('MEMBER', 'ADMIN')")
-                .antMatchers(new String[] { "/notices/**" })
-                .access("request.method == 'GET' ? permitAll : hasRole('ADMIN')")
-                .antMatchers(new String[] { "/items/**" })
-                .access("request.method == 'GET' ? permitAll : hasRole('ADMIN')")
-                .antMatchers(new String[] { "/coins/**" }).access("hasRole('MEMBER')")
-                .antMatchers(new String[] { "/useritems/**" }).access("hasAnyRole('MEMBER', 'ADMIN')")
-                .antMatchers(new String[] { "/pds/**" })
-                .access("request.method == 'GET' ? permitAll : hasRole('ADMIN')")
+                // .antMatchers("/codes/**").access("permitAll")
+                .antMatchers("/users/**").access("permitAll")
+                // .antMatchers( "/codegroups/**").access("hasRole('ADMIN')")
+                // .antMatchers("/codedetails/**").access("hasRole('ADMIN')")
+                // .antMatchers("/boards/**")
+                // .access("request.method == 'GET' ? permitAll : hasAnyRole('MEMBER','ADMIN')")
+                // .antMatchers("/notices/**")
+                // .access("request.method == 'GET' ? permitAll : hasRole('ADMIN')")
+                // .antMatchers("/items/**")
+                // .access("request.method == 'GET' ? permitAll : hasRole('ADMIN')")
+                // .antMatchers("/coins/**").access("hasRole('MEMBER')")
+                // .antMatchers("/useritems/**").access("hasAnyRole('MEMBER', 'ADMIN')")
+                // .antMatchers("/pds/**")
+                // .access("request.method == 'GET' ? permitAll : hasRole('ADMIN')")
                 .anyRequest().authenticated();
 
         http.exceptionHandling()
