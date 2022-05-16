@@ -55,9 +55,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        log.info("!!!!!!!!!!!!!!!!!!!!!!!!!");
-        log.info(PathRequest.toStaticResources().atCommonLocations().toString());
-
         http.authorizeRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers().hasAnyRole("ADMIN").antMatchers("/").permitAll()
