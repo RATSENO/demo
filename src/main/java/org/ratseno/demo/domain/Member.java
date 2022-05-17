@@ -39,7 +39,6 @@ public class Member {
 
     @NotBlank
     @Column(length = 200, nullable = false)
-    @JsonIgnore
     private String userPw;
 
     @NotBlank
