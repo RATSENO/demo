@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import springfox.documentation.annotations.ApiIgnore;
+
 @RestController
 @RequestMapping({ "/users" })
 public class MemberController {
@@ -72,7 +74,7 @@ public class MemberController {
 
     @PreAuthorize("hasAnyRole('ADMIN','MEMBER')")
     @GetMapping({ "/myinfo" })
-    public ResponseEntity<Member> getMyInfo(@AuthenticationPrincipal CustomUser customUser) throws Exception {
+    public ResponseEntity<Member> getMyInfo(@AuthenticationPrincipal @ApiIgnore CustomUser customUser) throws Exception {
         log.info("=======MemberController.getMyInfo=======");
         Long userNo = Long.valueOf(customUser.getUserNo());
         log.info("register userNo = {}", userNo);
@@ -82,4 +84,15 @@ public class MemberController {
         log.info("=======MemberController.getMyInfo.{}=======", HttpStatus.OK);
         return new ResponseEntity(member, HttpStatus.OK);
     }
+
+
+    /* @Operation(summary = "test hello", description = "hello api example")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK !!"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
+    })
+    @GetMapping("/hello")
+     */    
 }

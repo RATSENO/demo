@@ -1,7 +1,6 @@
 package org.ratseno.demo.config;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.ratseno.demo.common.interceptor.AccessLoggingInterceptor;
 import org.springframework.context.annotation.Bean;

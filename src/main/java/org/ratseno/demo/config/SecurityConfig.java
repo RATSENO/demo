@@ -31,6 +31,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
+    private static final String[] SWAGGER3_URL = {"/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"};
+
     private final JwtTokenProvider jwtTokenProvider;
 
     public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
@@ -72,6 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // .antMatchers("/useritems/**").access("hasAnyRole('MEMBER', 'ADMIN')")
                 // .antMatchers("/pds/**")
                 // .access("request.method == 'GET' ? permitAll : hasRole('ADMIN')")
+                .antMatchers(SWAGGER3_URL).access("permitAll")
                 .anyRequest().authenticated();
 
         http.exceptionHandling()

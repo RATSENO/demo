@@ -8,9 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import springfox.documentation.annotations.ApiIgnore;
+
 @Controller
 public class HomeController {
 
+    @ApiIgnore
     @GetMapping({ "/" })
     public String home(Locale locale, Model model) {
         LocalDateTime now = LocalDateTime.now();
