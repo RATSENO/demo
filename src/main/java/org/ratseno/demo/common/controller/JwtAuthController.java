@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.ratseno.demo.common.security.domain.CustomUser;
+import org.ratseno.demo.common.security.jwt.constants.SecurityConstants;
 import org.ratseno.demo.common.security.jwt.provider.JwtTokenProvider;
 import org.ratseno.demo.domain.Member;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
@@ -37,7 +39,8 @@ public class JwtAuthController {
     }
 
 
-    @PostMapping({"/token"})
+    @PostMapping(value = {"/token"})
+    @ApiOperation(value = "JWT 토큰 발급")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody Member member){
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(member.getUserName(), member.getUserPw());
         Authentication authentication = this.authenticationManager.authenticate((Authentication) usernamePasswordAuthenticationToken);
@@ -50,7 +53,7 @@ public class JwtAuthController {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        String token = "Bearer " + this.jwtTokenProvider.createToken(userNo, userId, roles);
+        String token = SecurityConstants.TOKEN_PREFIX + this.jwtTokenProvider.createToken(userNo, userId, roles);
         Map<String, String> res = new HashMap<>();
         res.put("token", token);
         return new ResponseEntity(res, HttpStatus.OK);
