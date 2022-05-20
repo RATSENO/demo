@@ -24,7 +24,7 @@ public class CodeController {
         this.codeSerivce = codeSerivce;
     }
 
-    @GetMapping({"/codeGroup"})
+    @GetMapping({"/codegroup"})
     public ResponseEntity<List<CodeLabelValue>> codeGroupList() throws Exception{
         log.info("===codeGroupList===");
         return new ResponseEntity<List<CodeLabelValue>>(this.codeSerivce.getCodeGroupList(), HttpStatus.OK);
