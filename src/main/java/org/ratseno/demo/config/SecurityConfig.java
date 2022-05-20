@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -62,6 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers().hasAnyRole("ADMIN").antMatchers("/").permitAll()
                 .antMatchers("/codes/**").access("permitAll")
                 .antMatchers("/users/**").access("permitAll")
+                .antMatchers("/auth/**").access("permitAll")
                 .antMatchers( "/codegroups/**").access("hasRole('ADMIN')")
                 .antMatchers("/codedetails/**").access("hasRole('ADMIN')")
                 // .antMatchers("/boards/**")
@@ -95,6 +98,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public UserDetailsService userDetailsService() {
         return new CustomUserDetailService();
+    }
+
+    @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Bean
