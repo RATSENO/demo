@@ -43,7 +43,7 @@ public class SwaggerConfig {
     
     //JWT를 인증 헤더로 포함하도록 APIKey를 정의해
     private ApiKey apiKey(){
-        return new ApiKey("JWT", "Authorization", "header");
+        return new ApiKey("Authorization", "Authorization", "header");
     }
 
     //글로벌 Authorization Scope를 사용하여 JWT Security Context를 구성
@@ -55,6 +55,6 @@ public class SwaggerConfig {
         AuthorizationScope authorizationScope = new AuthorizationScope("globla", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope; 
-        return Arrays.asList(new SecurityReference("JWT", authorizationScopes)); 
+        return Arrays.asList(new SecurityReference("Authorization", authorizationScopes)); 
     }
 }
