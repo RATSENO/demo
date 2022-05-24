@@ -1,6 +1,5 @@
 package org.ratseno.demo.common.util;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -8,62 +7,96 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.ratseno.demo.common.constant.CodeConstants;
 import org.ratseno.demo.common.exception.CommonException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import io.swagger.models.HttpMethod;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 public class RestTemplateUtil {
-    private static final Logger log = LoggerFactory.getLogger(RestTemplateUtil.class);
-
     private final ObjectMapper objectMapper;
+    private final RestTemplate restTemplate;
 
-    public RestTemplateUtil(){
+    public RestTemplateUtil(RestTemplate restTemplate){
         this.objectMapper = new ObjectMapper();
+        this.restTemplate = restTemplate;
     }
-    
-    /* 
-    public ResponseEntity<String> sendGET(String url, HttpHeaders headers, HttpMethod method, String payload){
-        this.validateParam(url, headers, method, HttpMethod.GET, payload);
 
-        RestTemplate restTemplate = new RestTemplate();
+    /**
+     * GET 요청
+     * @param url
+     * @param headers
+     * @param method
+     * @param payload
+     * @return
+     */
+    public ResponseEntity<String> sendGET(String url, HttpHeaders headers, String payload){
+        this.validateParam(url, headers, payload);
 
         HttpEntity<String> requestEntity = new HttpEntity<>(payload, headers);
         ResponseEntity<String> responseEntity = null;
 
-        Map<String, Object> map = new HashMap<>();
-    }
-     */
+        responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
+        log.info("ok:responseBody="+responseEntity.getBody());
 
-    /* 
-    public ResponseEntity<String> sendPOST(String url, HttpHeaders headers, HttpMethod method, String payload){
-        this.validateParam(url, headers, method, HttpMethod.POST, payload);
+        return responseEntity;
     }
 
-    public ResponseEntity<String> sendFORM(String url, HttpHeaders headers, HttpMethod method, String payload){
-        this.validateParam(url, headers, method, HttpMethod.POST, payload);
-    }
+    /**
+     * POST 요청
+     * @param url
+     * @param headers
+     * @param method
+     * @param payload
+     * @return
      */
-    private void validateParam(String url, HttpHeaders headers, HttpMethod requestMethod, HttpMethod tagetMethod, String payload){
+    public ResponseEntity<String> sendPOST(String url, HttpHeaders headers, String payload){
+        this.validateParam(url, headers, payload);
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(payload, headers);
+        ResponseEntity<String> responseEntity = null;
+
+        responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+        log.info("ok:responseBody="+responseEntity.getBody());
+
+        return responseEntity;        
+    }
+
+    /**
+     * POST(form) 요청
+     * @param url
+     * @param headers
+     * @param method
+     * @param payload
+     * @return
+     */    
+    public ResponseEntity<String> sendFORM(String url, HttpHeaders headers, HttpMethod method, MultiValueMap<String, String> map){
+        this.validateParam(url, headers);
+
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
+        ResponseEntity<String> responseEntity = null;
+
+        responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+        log.info("ok:responseBody="+responseEntity.getBody());
+
+        return responseEntity; 
+    }
+
+    private void validateParam(String url, HttpHeaders headers, String payload){
         if(StringUtil.isEmpty(url)){
             throw new CommonException(CodeConstants.REQUIRED_PARAMETER_ERROR, new String[]{"url"});
         }
         if(headers==null){
             throw new CommonException(CodeConstants.REQUIRED_PARAMETER_ERROR, new String[]{"header"});
-        }
-        if(requestMethod==null){
-            throw new CommonException(CodeConstants.REQUIRED_PARAMETER_ERROR, new String[]{"method"});
-        }
-        if(requestMethod!=null){
-            if(!requestMethod.name().equals(tagetMethod.name())){
-                throw new CommonException(CodeConstants.REQUIRED_PARAMETER_ERROR, new String[]{"method"});
-            }
         }
         if(StringUtil.isEmpty(payload)){
             throw new CommonException(CodeConstants.REQUIRED_PARAMETER_ERROR, new String[]{"payload"});
@@ -77,4 +110,13 @@ public class RestTemplateUtil {
             }
         }
     }
+
+    private void validateParam(String url, HttpHeaders headers){
+        if(StringUtil.isEmpty(url)){
+            throw new CommonException(CodeConstants.REQUIRED_PARAMETER_ERROR, new String[]{"url"});
+        }
+        if(headers==null){
+            throw new CommonException(CodeConstants.REQUIRED_PARAMETER_ERROR, new String[]{"header"});
+        }
+    }    
 }
