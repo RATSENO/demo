@@ -122,6 +122,11 @@ public class RestTemplateUtil {
         return responseEntity; 
     }
 
+    /**
+     * @param url
+     * @param headers
+     * @param payload
+     */
     private void validateParam(String url, HttpHeaders headers, String payload){
         if(StringUtil.isEmpty(url)){
             throw new CommonException(CodeConstants.REQUIRED_PARAMETER_ERROR, new String[]{"url"});
