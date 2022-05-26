@@ -31,21 +31,6 @@ public class RestTemplateUtil {
 
     /**
      * GET 요청
-     *    
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
      * @param url
      * @param headers
      * @param method
@@ -66,18 +51,6 @@ public class RestTemplateUtil {
 
     /**
      * POST 요청
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
      * @param url
      * @param headers
      * @param method
@@ -98,8 +71,6 @@ public class RestTemplateUtil {
 
     /**
      * POST(form) 요청
-     * 
-     * 
      * @param url
      * @param headers
      * @param method
@@ -121,10 +92,6 @@ public class RestTemplateUtil {
     }
 
     /**
-     * 
-     * 
-     * 
-     * 
      * @param url
      * @param headers
      * @param payload
