@@ -31,6 +31,16 @@ public class RestTemplateUtil {
 
     /**
      * GET 요청
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
      * @param url
      * @param headers
      * @param method
