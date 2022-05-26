@@ -31,6 +31,11 @@ public class RestTemplateUtil {
 
     /**
      * GET 요청
+     *    
+     * 
+     * 
+     * 
+     * 
      * 
      * 
      * 
@@ -95,18 +100,11 @@ public class RestTemplateUtil {
      * POST(form) 요청
      * 
      * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
      * @param url
      * @param headers
      * @param method
      * @param payload
-     * @return
+     * @return:
      */    
     public ResponseEntity<String> sendFORM(String url, HttpHeaders headers, HttpMethod method, MultiValueMap<String, String> map){
         this.validateParam(url, headers);
@@ -123,6 +121,10 @@ public class RestTemplateUtil {
     }
 
     /**
+     * 
+     * 
+     * 
+     * 
      * @param url
      * @param headers
      * @param payload
