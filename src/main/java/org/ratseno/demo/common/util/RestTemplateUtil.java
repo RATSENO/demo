@@ -30,6 +30,7 @@ public class RestTemplateUtil {
     }
 
     /**
+     * 
      * GET 요청
      * @param url
      * @param headers
@@ -50,6 +51,8 @@ public class RestTemplateUtil {
     }
 
     /**
+     * 
+     * 
      * POST 요청
      * @param url
      * @param headers
@@ -70,6 +73,9 @@ public class RestTemplateUtil {
     }
 
     /**
+     * 
+     * 
+     * 
      * POST(form) 요청
      * @param url
      * @param headers
