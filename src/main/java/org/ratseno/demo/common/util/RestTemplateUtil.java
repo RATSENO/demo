@@ -39,7 +39,7 @@ public class RestTemplateUtil {
      * @return
      */
     public ResponseEntity<String> sendGET(String url, HttpHeaders headers, String payload){
-        this.validateParam(url, headers, payload);
+        this.validateParam(url, headers);
 
         HttpEntity<String> requestEntity = new HttpEntity<>(payload, headers);
         ResponseEntity<String> responseEntity = null;
