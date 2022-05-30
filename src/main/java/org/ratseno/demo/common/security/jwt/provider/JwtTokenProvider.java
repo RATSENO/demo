@@ -31,6 +31,12 @@ public class JwtTokenProvider {
 
     private final AppProperties appProperties;
 
+    public static final long ACCESS_TOKEN_EXPIRED_SECOND = 60L * 10;
+    public static final long REFRESH_TOKEN_EXPIRED_SECOND = 1000L * 60 * 24 * 2;
+
+    public static final String ACCESS_TOKEN = "X-ACCESS-TOKEN";
+    public static final String REFRESH_TOKEN = "X-REFRESH-TOKEN";
+
     private byte[] getSigninKey() {
         return this.appProperties.getSecretKey().getBytes();
     }
@@ -47,6 +53,10 @@ public class JwtTokenProvider {
         this.appProperties = appProperties;
     }
 
+    public Claims extractAllClaims(String jwtToken) throws ExpiredJwtException{
+        return Jwts.parser().setSigningKey(getSigninKey()).parseClaimsJws(jwtToken).getBody();
+    }
+
     public long getUserNo(String header) throws Exception {
         String token = header.substring(7);
         byte[] signinKey = this.getSigninKey();
@@ -59,18 +69,47 @@ public class JwtTokenProvider {
         return userNo;
     }
 
-    public String createToken(long userNo, String userId, List<String> roles) {
+    /**
+     * ACCESS TOKEN 생성
+     * @param userNo
+     * @param userId
+     * @param roles
+     * @return
+     */
+    public String createAccessToken(long userNo, String userId, List<String> roles) {
         byte[] signinKey = getSigninKey();
         String token = Jwts.builder()
                 .signWith(Keys.hmacShaKeyFor(signinKey), SignatureAlgorithm.HS512)
                 .setHeaderParam("typ", "JWT")
-                .setExpiration(new Date(System.currentTimeMillis() + 864000000L))
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRED_SECOND))
                 .claim("uno", "" + userNo)
                 .claim("uid", userId)
                 .claim("rol", roles)
                 .compact();
         return token;
     }
+
+    /**
+     * REFRESH TOKEN 생성
+     * @param userNo
+     * @param userId
+     * @param roles
+     * @return
+     */
+    public String createRefreshToken(long userNo, String userId, List<String> roles) {
+        byte[] signinKey = getSigninKey();
+        String token = Jwts.builder()
+                .signWith(Keys.hmacShaKeyFor(signinKey), SignatureAlgorithm.HS512)
+                .setHeaderParam("typ", "JWT")
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRED_SECOND))
+                .claim("uno", "" + userNo)
+                .claim("uid", userId)
+                .claim("rol", roles)
+                .compact();
+        return token;
+    }    
 
     public UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader("Authorization");

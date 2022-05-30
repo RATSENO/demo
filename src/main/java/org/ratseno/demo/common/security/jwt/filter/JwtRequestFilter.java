@@ -35,8 +35,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         log.info("==========JwtRequestFilter.doFilterInternal========");
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = this.jwtTokenProvider
-                .getAuthentication(request);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = this.jwtTokenProvider.getAuthentication(request);
         String header = request.getHeader("Authorization");
         if (isEmpty(header) || !header.startsWith("Bearer ")) {
             filterChain.doFilter((ServletRequest) request, (ServletResponse) response);

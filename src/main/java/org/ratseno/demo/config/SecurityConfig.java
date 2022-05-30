@@ -8,6 +8,7 @@ import org.ratseno.demo.common.security.jwt.filter.JwtAuthenticationFilter;
 import org.ratseno.demo.common.security.jwt.filter.JwtRequestFilter;
 import org.ratseno.demo.common.security.jwt.provider.JwtTokenProvider;
 import org.ratseno.demo.common.security.service.CustomUserDetailService;
+import org.ratseno.demo.common.util.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -37,8 +38,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+    private final RedisUtil redisUtil;
+
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider, RedisUtil redisUtil) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.redisUtil = redisUtil;
     }
 
     @Override
@@ -52,10 +56,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // CSRF 방지 지원 기능 비활성화
         http.csrf().disable();
-        http.addFilterAt(new JwtAuthenticationFilter(authenticationManager(), this.jwtTokenProvider),
-                UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtRequestFilter(this.jwtTokenProvider),
-                        UsernamePasswordAuthenticationFilter.class)
+        http.addFilterAt(new JwtAuthenticationFilter(authenticationManager(), this.jwtTokenProvider, this.redisUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtRequestFilter(this.jwtTokenProvider),UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

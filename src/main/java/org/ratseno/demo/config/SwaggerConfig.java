@@ -24,7 +24,11 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.OAS_30)
                 .securityContexts(Arrays.asList(this.securityContext()))
-                .securitySchemes(Arrays.asList(apiKey()))
+                //.securitySchemes(Arrays.asList(apiKey()))
+                .securitySchemes(Arrays.asList(
+                                                new ApiKey("X-ACCESS-TOKEN", "Authorization", "header"), 
+                                                new ApiKey("X-REFRESH-TOKEN", "Authorization", "header")
+                                            ))
                 .useDefaultResponseMessages(false)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("org.ratseno.demo"))
@@ -42,9 +46,11 @@ public class SwaggerConfig {
     }    
     
     //JWT를 인증 헤더로 포함하도록 APIKey를 정의해
+    /* 
     private ApiKey apiKey(){
         return new ApiKey("Authorization", "Authorization", "header");
     }
+    */
 
     //글로벌 Authorization Scope를 사용하여 JWT Security Context를 구성
     private SecurityContext securityContext(){
@@ -52,9 +58,12 @@ public class SwaggerConfig {
     }
 
     private List<SecurityReference> defaultAuth(){
-        AuthorizationScope authorizationScope = new AuthorizationScope("globla", "accessEverything");
+        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope; 
-        return Arrays.asList(new SecurityReference("Authorization", authorizationScopes)); 
+        return Arrays.asList(
+                                new SecurityReference("X-ACCESS-TOKEN", authorizationScopes), 
+                                new SecurityReference("X-REFRESH-TOKEN", authorizationScopes)
+                            ); 
     }
 }

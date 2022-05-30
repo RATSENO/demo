@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.ratseno.demo.common.security.domain.CustomUser;
 import org.ratseno.demo.common.security.jwt.provider.JwtTokenProvider;
+import org.ratseno.demo.common.util.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,9 +25,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public JwtAuthenticationFilter(AuthenticationManager manager, JwtTokenProvider jwtTokenProvider) {
+    private final RedisUtil redisUtil;
+
+    public JwtAuthenticationFilter(AuthenticationManager manager, JwtTokenProvider jwtTokenProvider, RedisUtil redisUtil) {
         this.authenticationManager = manager;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.redisUtil = redisUtil;
         setFilterProcessesUrl("/api/authenticate");
     }
 
@@ -34,8 +38,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         log.info("==========JwtAuthenticationFilter.attemptAuthentication========");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                username, password);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
         return this.authenticationManager.authenticate((Authentication) usernamePasswordAuthenticationToken);
     }
 
@@ -52,8 +55,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        String token = this.jwtTokenProvider.createToken(userNo, userId, roles);
-        response.addHeader("Authorization", "Bearer " + token);
+        String accessToken = this.jwtTokenProvider.createAccessToken(userNo, userId, roles);
+        String refreshToken = this.jwtTokenProvider.createRefreshToken(userNo, userId, roles);
+        
+        response.addHeader(JwtTokenProvider.ACCESS_TOKEN, accessToken);
+        response.addHeader(JwtTokenProvider.REFRESH_TOKEN, refreshToken);
+
+        redisUtil.setDataExpire(refreshToken, userId, JwtTokenProvider.REFRESH_TOKEN_EXPIRED_SECOND);
     }
 
 }
