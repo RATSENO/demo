@@ -62,7 +62,7 @@ public class JwtAuthController {
         res.put(JwtTokenProvider.ACCESS_TOKEN, accessToken);
         res.put(JwtTokenProvider.REFRESH_TOKEN, refreshToken);
 
-        redisUtil.setDataExpire(refreshToken, userId, JwtTokenProvider.REFRESH_TOKEN_EXPIRED_SECOND);
+        redisUtil.setDataExpire(refreshToken, userId, 60L);
 
         return new ResponseEntity(res, HttpStatus.OK);
     }
