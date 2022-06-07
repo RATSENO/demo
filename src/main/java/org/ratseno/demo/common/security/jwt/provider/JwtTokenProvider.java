@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -31,7 +30,7 @@ public class JwtTokenProvider {
 
     private final AppProperties appProperties;
 
-    public static final long ACCESS_TOKEN_EXPIRED_SECOND = 60L * 10;
+    public static final long ACCESS_TOKEN_EXPIRED_SECOND = 60L;
     public static final long REFRESH_TOKEN_EXPIRED_SECOND = 1000L * 60 * 24 * 2;
 
     public static final String ACCESS_TOKEN = "X-ACCESS-TOKEN";
@@ -71,10 +70,10 @@ public class JwtTokenProvider {
 
     /**
      * ACCESS TOKEN 생성
-     * @param userNo
-     * @param userId
-     * @param roles
-     * @return
+     * @param long userNo
+     * @param String userId
+     * @param List<String> roles
+     * @return String
      */
     public String createAccessToken(long userNo, String userId, List<String> roles) {
         byte[] signinKey = getSigninKey();
@@ -92,10 +91,10 @@ public class JwtTokenProvider {
 
     /**
      * REFRESH TOKEN 생성
-     * @param userNo
-     * @param userId
-     * @param roles
-     * @return
+     * @param long userNo
+     * @param String userId
+     * @param List<String> roles
+     * @return String
      */
     public String createRefreshToken(long userNo, String userId, List<String> roles) {
         byte[] signinKey = getSigninKey();
@@ -104,20 +103,24 @@ public class JwtTokenProvider {
                 .setHeaderParam("typ", "JWT")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRED_SECOND))
-                .claim("uno", "" + userNo)
-                .claim("uid", userId)
-                .claim("rol", roles)
+                //.claim("uno", "" + userNo)
+                //.claim("uid", userId)
+                //.claim("rol", roles)
                 .compact();
         return token;
     }    
 
     public UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
-        if (this.isNotEmpty(token)) {
+
+        String ACCESS_TOKEN = request.getHeader(JwtTokenProvider.ACCESS_TOKEN);
+        String REFRESH_TOKEN = request.getHeader(JwtTokenProvider.REFRESH_TOKEN);
+
+        if (this.isNotEmpty(ACCESS_TOKEN)) {
             try {
                 byte[] signinKey = getSigninKey();
                 Jws<Claims> parsedToken = Jwts.parser().setSigningKey(signinKey)
-                        .parseClaimsJws(token.replace("Bearer", ""));
+                        .parseClaimsJws(ACCESS_TOKEN);
 
                 Claims claims = (Claims) parsedToken.getBody();
                 String userNo = (String) claims.get("uno");
@@ -152,28 +155,5 @@ public class JwtTokenProvider {
             }
         }
         return null;
-    }
-
-    public boolean validateToken(String jwtToken) {
-        try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(this.appProperties.getSecretKey())
-                    .parseClaimsJws(jwtToken);
-            return !((Claims) claims.getBody()).getExpiration().before(new Date());
-
-        } catch (ExpiredJwtException exception) {
-            log.error("Token Expired");
-            return false;
-
-        } catch (JwtException exception) {
-            log.error("Token Tampered");
-            return false;
-
-        } catch (NullPointerException exception) {
-            log.error("Token is null");
-            return false;
-
-        } catch (Exception e) {
-            return false;
-        }
     }
 }

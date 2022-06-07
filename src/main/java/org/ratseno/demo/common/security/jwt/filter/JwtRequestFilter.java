@@ -35,12 +35,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         log.info("==========JwtRequestFilter.doFilterInternal========");
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = this.jwtTokenProvider.getAuthentication(request);
-        String header = request.getHeader("Authorization");
-        if (isEmpty(header) || !header.startsWith("Bearer ")) {
+        //요청 시 필터에 토큰 정보가 없을 경우
+        String ACCESS_TOKEN = request.getHeader(JwtTokenProvider.ACCESS_TOKEN);
+        String REFRESH_TOKEN = request.getHeader(JwtTokenProvider.REFRESH_TOKEN);
+        if (isEmpty(ACCESS_TOKEN) || isEmpty(REFRESH_TOKEN)) {
             filterChain.doFilter((ServletRequest) request, (ServletResponse) response);
             return;
         }
+
+        //필터에 토큰 정보가 있을 경우
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = this.jwtTokenProvider.getAuthentication(request);
         SecurityContextHolder.getContext().setAuthentication((Authentication) usernamePasswordAuthenticationToken);
         filterChain.doFilter((ServletRequest) request, (ServletResponse) response);
     }
