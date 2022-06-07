@@ -13,6 +13,7 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.SecurityReference;
+import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -25,10 +26,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.OAS_30)
                 .securityContexts(Arrays.asList(this.securityContext()))
                 //.securitySchemes(Arrays.asList(apiKey()))
-                .securitySchemes(Arrays.asList(
-                                                new ApiKey("X-ACCESS-TOKEN", "Authorization", "header"), 
-                                                new ApiKey("X-REFRESH-TOKEN", "Authorization", "header")
-                                            ))
+                .securitySchemes(apiKeys())
                 .useDefaultResponseMessages(false)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("org.ratseno.demo"))
@@ -51,6 +49,13 @@ public class SwaggerConfig {
         return new ApiKey("Authorization", "Authorization", "header");
     }
     */
+    
+    private List<SecurityScheme> apiKeys(){
+        return Arrays.asList(
+            new ApiKey("X-ACCESS-TOKEN", "Authorization", "header"), 
+            new ApiKey("X-REFRESH-TOKEN", "Authorization", "header")
+        );
+    }
 
     //글로벌 Authorization Scope를 사용하여 JWT Security Context를 구성
     private SecurityContext securityContext(){
