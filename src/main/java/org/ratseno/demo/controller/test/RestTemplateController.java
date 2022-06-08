@@ -1,4 +1,4 @@
-package org.ratseno.demo.controller;
+package org.ratseno.demo.controller.test;
 
 import org.ratseno.demo.common.util.RestTemplateUtil;
 import org.springframework.http.HttpHeaders;
@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping({"/rest"})
-public class RestTemplateTestController {
+@RequestMapping({"/resttemplate"})
+public class RestTemplateController {
     
     private final RestTemplateUtil restTemplateUtil;
 
-    public RestTemplateTestController(RestTemplateUtil restTemplateUtil){
+    public RestTemplateController(RestTemplateUtil restTemplateUtil){
         this.restTemplateUtil = restTemplateUtil;
     }
 
