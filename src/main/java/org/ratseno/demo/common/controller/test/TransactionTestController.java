@@ -1,6 +1,6 @@
-package org.ratseno.demo.controller.test;
+package org.ratseno.demo.common.controller.test;
 
-import org.ratseno.demo.service.test.TestSaveService;
+import org.ratseno.demo.common.service.test.TestSaveService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -33,8 +33,8 @@ public class WebClientConfig {
 
         //Memory 조정: 2M (default 256KB)
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
-            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(2*1024*1024)) 
-            .build();
+                                                                    .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(2*1024*1024)) 
+                                                                    .build();
 
         return WebClient.builder()
             //.baseUrl("http://localhost:5011")

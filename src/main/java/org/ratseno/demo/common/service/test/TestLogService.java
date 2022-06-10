@@ -1,4 +1,4 @@
-package org.ratseno.demo.service.test;
+package org.ratseno.demo.common.service.test;
 
 public interface TestLogService {
     

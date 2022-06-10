@@ -1,9 +1,9 @@
-package org.ratseno.demo.service.test.impl;
+package org.ratseno.demo.common.service.test.impl;
 
-import org.ratseno.demo.domain.test.TestSave;
-import org.ratseno.demo.repository.test.TestSaveRepository;
-import org.ratseno.demo.service.test.TestLogService;
-import org.ratseno.demo.service.test.TestSaveService;
+import org.ratseno.demo.common.domain.test.TestSave;
+import org.ratseno.demo.common.repository.test.TestSaveRepository;
+import org.ratseno.demo.common.service.test.TestLogService;
+import org.ratseno.demo.common.service.test.TestSaveService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

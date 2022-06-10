@@ -1,4 +1,4 @@
-package org.ratseno.demo.controller.test;
+package org.ratseno.demo.common.controller.test;
 
 import org.ratseno.demo.common.util.RestTemplateUtil;
 import org.springframework.http.HttpHeaders;

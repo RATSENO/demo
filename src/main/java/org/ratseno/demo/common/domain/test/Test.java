@@ -1,4 +1,4 @@
-package org.ratseno.demo.domain.test;
+package org.ratseno.demo.common.domain.test;
 
 public class Test {
 
