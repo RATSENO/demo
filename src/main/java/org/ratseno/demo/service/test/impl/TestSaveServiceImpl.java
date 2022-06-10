@@ -22,13 +22,43 @@ public class TestSaveServiceImpl implements TestSaveService{
     @Transactional
     @Override
     public void saveTest() {
+        TestSave testSave = new TestSave();
+        testSave.setText("테스트");
+        testSaveRepository.save(testSave);
+
+        //자식
+        testLogService.saveLog();    
+
+        throw new RuntimeException();
+    }
+
+    @Transactional
+    @Override
+    public void saveTest2() {
+        //부모에서 예외처리
         try {
             TestSave testSave = new TestSave();
             testSave.setText("테스트");
             testSaveRepository.save(testSave);
-            testLogService.saveLog();    
+
+            //자식 - @Transactional(propagation = Propagation.REQUIRES_NEW)
+            testLogService.saveLog2();    
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }   
+    
+    @Transactional
+    @Override
+    public void saveTest3() {
+        TestSave testSave = new TestSave();
+        testSave.setText("테스트");
+        testSaveRepository.save(testSave);
+
+        //자식 - @Transactional(propagation = Propagation.REQUIRES_NEW)
+        testLogService.saveLog3();    
+
+        //부모에서 예외 발생
+        throw new RuntimeException();
+    }      
 }
