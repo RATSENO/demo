@@ -7,7 +7,7 @@ import java.util.Map;
 import org.ratseno.demo.common.domain.test.Test;
 import org.ratseno.demo.common.domain.test.TestPost;
 import org.ratseno.demo.common.exception.CommonException;
-import org.springframework.http.HttpMethod;
+import org.ratseno.demo.common.repository.test.TestPostRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,8 +31,11 @@ public class WebClientController {
 
     private final WebClient webClient;
 
-    public WebClientController(WebClient webClient){
+    private final TestPostRepository testPostRepository;
+
+    public WebClientController(WebClient webClient, TestPostRepository testPostRepository){
         this.webClient = webClient;
+        this.testPostRepository = testPostRepository;
     }
 
     @GetMapping("/sample/get")
@@ -127,5 +130,32 @@ public class WebClientController {
                         .retrieve()
                         .bodyToMono(TestPost.class);
     }
+
+    @ApiOperation(value = "WebClient POST 요청2", notes = "WebClient를 이용하여 POST요청 테스트, REQUEST BODY에 JSON 데이터")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "500", description = "서버에러")
+    })
+    @PostMapping("/sample/post2")
+    public Mono<TestPost> postTest2(@RequestBody TestPost post){
+        String url = "https://jsonplaceholder.typicode.com";
+        String uri = "/posts";
+
+        log.info("########call before#######");
+
+        Mono<TestPost> monoTestPost = webClient.mutate()
+                                                .baseUrl(url)
+                                                .build()
+                                                .post()
+                                                .uri(uri)
+                                                .bodyValue(post)
+                                                .retrieve()
+                                                .bodyToMono(TestPost.class);
+        monoTestPost.subscribe((t) -> this.testPostRepository.save(t));
+
+        log.info("########call after#######");
+
+        return monoTestPost;
+    }    
 
 }
