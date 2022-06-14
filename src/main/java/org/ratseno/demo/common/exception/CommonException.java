@@ -7,7 +7,7 @@ public class CommonException extends AbstractException{
 
     @Override
     public String getCode() {
-        return null;
+        return this.errorCode;
     }
 
     public void setErrorCode(String errorCode) {
