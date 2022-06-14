@@ -9,11 +9,11 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping({"/transaction"})
-public class TransactionTestController {
+public class TransactionController {
     
     private final TestSaveService testSaveService;
 
-    public TransactionTestController(TestSaveService testSaveService){
+    public TransactionController(TestSaveService testSaveService){
         this.testSaveService = testSaveService;
     }
 
